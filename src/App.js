@@ -1,23 +1,41 @@
-import logo from './logo.svg';
+import { useState } from 'react';
+import Qty from 'js-quantities';
+
+import { Ingredient } from './components/Ingredient';
+
 import './App.css';
 
+if (typeof window === 'object') {
+  window.Qty = Qty;
+}
+
+const DEFAULT_MEASUREMENT_KIND = 'volume';
+
 function App() {
+  const [recipeMeasurementKind, setRecipeMeasurementKind] = useState(DEFAULT_MEASUREMENT_KIND);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div className="app">
+      <div className="measurement-kind">
+        <h2>Measure by:</h2>
+        <select
+          onChange={(e) => {
+            console.log('select on change: ', e.target.value);
+            setRecipeMeasurementKind(e.target.value);
+          }}
+          value={recipeMeasurementKind}
         >
-          Learn React
-        </a>
-      </header>
+          {Qty.getKinds().map((kind) => (
+            <option
+              value={kind}
+              key={kind}
+            >
+              {kind}
+            </option>
+          ))}
+        </select>
+      </div>
+      <Ingredient globalMeasurementKind={recipeMeasurementKind} />
     </div>
   );
 }
